@@ -1,11 +1,9 @@
 const express = require("express");
 const app = express();
 const attendenceRoutes = require("./attendence/routes");
-const bodyParser = require("body-parser");
+
+app.use(express.json());
 const pool = require("./db");
-
-app.use(bodyParser.json());
-
 app.get("/login", async (req, res) => {
   const { email, password } = req.body;
   // Ensure email and password are provided
