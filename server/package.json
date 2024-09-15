@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon index"
+    "serve": "node index.js"
   },
   "keywords": [],
   "author": "",
