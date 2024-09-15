@@ -4,6 +4,11 @@ const attendenceRoutes = require("./attendence/routes");
 
 app.use(express.json());
 const pool = require("./db");
+
+app.get("/reg", (req, res) => {
+  res.send("Hello");
+});
+
 app.get("/login", async (req, res) => {
   const { email, password } = req.body;
   // Ensure email and password are provided
