@@ -3,7 +3,10 @@
 const express = require("express");
 const { getTokenByBatchname } = require("../models/batch");
 const { getUserById } = require("../models/profile");
-const { markAttendance } = require("../models/attendance");
+const {
+  markAttendance,
+  getAttendanceByUserId,
+} = require("../models/attendance");
 require("dotenv").config();
 
 const router = express.Router();
@@ -22,7 +25,19 @@ router.post("/mark", async (req, res) => {
     } */
     console.log(Orginaltoken.token);
     console.log(token);
-    const attendance_id  =user_id;
+    try {
+      const exist = await getAttendanceByUserId(user_id);
+      console.log(exist);
+      if (exist) {
+        res.status(200).json({ message: "Attendance Marked successfully" });
+        return;
+      }
+    } catch (error) {
+      console.error("Error marking attendance:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+
+    const attendance_id = user_id;
     // Mark attendance
     if (token == Orginaltoken.token) {
       const attendanceRecord = await markAttendance(

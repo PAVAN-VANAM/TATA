@@ -26,10 +26,9 @@ const markAttendance = async (attendance_id, attendance, batch_name) => {
  */
 const getAttendanceByUserId = async (user_id) => {
   const query = `
-    SELECT user_id, attendance
+    SELECT attendance_id, attendance
     FROM attendance
-    WHERE user_id = $1
-    ORDER BY user_id DESC;
+    WHERE attendance_id = $1;
   `;
   const values = [user_id];
   const { rows } = await pool.query(query, values);
