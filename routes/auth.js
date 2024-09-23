@@ -2,6 +2,7 @@
 
 const express = require("express");
 const { createUser, getUserById } = require("../models/profile");
+const { getTokenByBatchId } = require("../models/batch");
 require("dotenv").config();
 
 const router = express.Router();
@@ -11,7 +12,7 @@ const router = express.Router();
  */
 router.post("/register", async (req, res) => {
   try {
-    const { user_id, name, password, department ,  batch_id } = req.body;
+    const { user_id, name, password, department, batch_id } = req.body;
 
     // Check if user already exists
     const existingUser = await getUserById(user_id);
@@ -20,7 +21,13 @@ router.post("/register", async (req, res) => {
     }
 
     // Create user
-    const user = await createUser(user_id, name, password,department, batch_id);
+    const user = await createUser(
+      user_id,
+      name,
+      password,
+      department,
+      batch_id
+    );
     res.status(201).json({ user });
   } catch (error) {
     console.error("Error registering user:", error);
@@ -47,7 +54,9 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.json({ user: user });
+    const batch = await getTokenByBatchId(user.batch_id);
+
+    res.json({ user: user, batch: batch.batch_name });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });

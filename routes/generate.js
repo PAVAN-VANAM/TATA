@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
   // Generate token
   const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
-    expiresIn: "10s",
+    expiresIn: "1min",
   });
 
   const record = await updateToken(batch_id, token);

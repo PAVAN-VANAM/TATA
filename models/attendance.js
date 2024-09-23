@@ -1,6 +1,6 @@
 // models/attendance.js
 
-const pool = require('./db');
+const pool = require("./db");
 
 /*
  * Mark attendance for a user.
@@ -8,13 +8,13 @@ const pool = require('./db');
  * param {boolean} attendance - Attendance status (true for present, false for absent).
  * returns - The inserted attendance record.
  */
-const markAttendance = async (user_id, attendance) => {
+const markAttendance = async (attendance_id, attendance, batch_name) => {
   const query = `
-    INSERT INTO attendance (user_id, attendance)
-    VALUES ($1, $2)
+    INSERT INTO attendance (attendance_id, attendance,batch_name)
+    VALUES ($1, $2,$3)
     RETURNING *;
   `;
-  const values = [user_id, attendance];
+  const values = [attendance_id, attendance, batch_name];
   const { rows } = await pool.query(query, values);
   return rows[0];
 };

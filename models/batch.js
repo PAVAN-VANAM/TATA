@@ -34,6 +34,16 @@ const getTokenByBatchId = async (batch_id) => {
   return rows[0];
 };
 
+const getTokenByBatchname = async (batch_name) => {
+  const query = `
+    SELECT * FROM batch
+    WHERE batch_name = $1;
+  `;
+  const values = [batch_name];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+};
+
 /*
  * Update a JWT token for a batch.
  * @param {number} batch_id - The ID of the batch.
@@ -68,6 +78,7 @@ const deleteToken = async (batch_id) => {
 
 module.exports = {
   createToken,
+  getTokenByBatchname,
   getTokenByBatchId,
   updateToken,
   deleteToken,

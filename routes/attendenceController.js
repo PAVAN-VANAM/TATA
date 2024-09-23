@@ -1,7 +1,7 @@
 // routes/attendance.js
 
 const express = require("express");
-const { getTokenByBatchId } = require("../models/batch");
+const { getTokenByBatchname } = require("../models/batch");
 const { getUserById } = require("../models/profile");
 const { markAttendance } = require("../models/attendance");
 require("dotenv").config();
@@ -13,18 +13,23 @@ const router = express.Router();
  */
 router.post("/mark", async (req, res) => {
   try {
-    const { user_id, batch_id, token, attendance } = req.body;
+    const { user_id, batch_name, token, attendance } = req.body;
     // Optionally, verify if the user exists
-    const Orginaltoken = await getTokenByBatchId(batch_id);
+    const Orginaltoken = await getTokenByBatchname(batch_name);
     /* const user = await getUserById(user_id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     } */
     console.log(Orginaltoken.token);
     console.log(token);
+    const attendance_id  =user_id;
     // Mark attendance
     if (token == Orginaltoken.token) {
-      const attendanceRecord = await markAttendance(user_id, attendance);
+      const attendanceRecord = await markAttendance(
+        attendance_id,
+        attendance,
+        batch_name
+      );
       res.status(201).json({ attendance: attendanceRecord });
     } else {
       res.status(404).json({ msg: "Check Your scan ...." });
