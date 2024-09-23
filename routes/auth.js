@@ -11,7 +11,7 @@ const router = express.Router();
  */
 router.post("/register", async (req, res) => {
   try {
-    const { user_id, name, password, batch_id } = req.body;
+    const { user_id, name, password, department ,  batch_id } = req.body;
 
     // Check if user already exists
     const existingUser = await getUserById(user_id);
@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
     }
 
     // Create user
-    const user = await createUser(user_id, name, password, batch_id);
+    const user = await createUser(user_id, name, password,department, batch_id);
     res.status(201).json({ user });
   } catch (error) {
     console.error("Error registering user:", error);
