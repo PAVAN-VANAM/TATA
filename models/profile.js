@@ -24,7 +24,7 @@ const createUser = async (user_id, name, password, batch_id) => {
  */
 const getUserById = async (user_id) => {
   const query =
-    "SELECT user_id, name,password, batch_id FROM profile WHERE user_id = $1;";
+    "SELECT user_id, name,password,department, batch_id FROM profile WHERE user_id = $1;";
   const values = [user_id];
   const { rows } = await pool.query(query, values);
   return rows[0];
