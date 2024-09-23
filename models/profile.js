@@ -9,10 +9,10 @@ const pool = require("./db");
  * @param {number} batch_id - The ID of the batch the user belongs to.
  * @returns {Promise<Object>} - The created user profile.
  */
-const createUser = async (user_id, name, password, batch_id) => {
+const createUser = async (user_id, name, password, department, batch_id) => {
   const query =
-    "INSERT INTO profile (user_id , name, password, batch_id) VALUES ( $1, $2, $3, $4)RETURNING user_id, name, batch_id;";
-  const values = [user_id, name, password, batch_id];
+    "INSERT INTO profile (user_id , name, password,department, batch_id) VALUES ( $1, $2, $3, $4, $5)RETURNING user_id, name,department, batch_id;";
+  const values = [user_id, name, password, department, batch_id];
   const { rows } = await pool.query(query, values);
   return rows[0];
 };
