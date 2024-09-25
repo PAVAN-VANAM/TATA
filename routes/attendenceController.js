@@ -47,7 +47,7 @@ router.post("/mark", async (req, res) => {
       );
       res.status(201).json({ message: "Attendance Marked successfully" });
     } else {
-      res.status(404).json({ msg: "Check Your scan ...." });
+      res.status(404).json({ msg: "Invalid" });
     }
   } catch (error) {
     console.error("Error marking attendance:", error);
