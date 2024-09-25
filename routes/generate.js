@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
   const { batch_id } = req.body;
 
   // Validate user_id (you can add your own validation logic here)
-  if (!user_id) {
+  if (!batch_id) {
     return res.status(400).json({ message: "Batch ID is required" });
   }
 
