@@ -45,7 +45,7 @@ router.post("/mark", async (req, res) => {
         attendance,
         batch_name
       );
-      res.status(201).json({ attendance: attendanceRecord });
+      res.status(201).json({ message: "Attendance Marked successfully" });
     } else {
       res.status(404).json({ msg: "Check Your scan ...." });
     }

@@ -7,15 +7,15 @@ require("dotenv").config();
 
 // Generate JWT Token
 router.post("/", async (req, res) => {
-  const { user_id, batch_id } = req.body;
+  const { batch_id } = req.body;
 
   // Validate user_id (you can add your own validation logic here)
   if (!user_id) {
-    return res.status(400).json({ message: "User ID is required" });
+    return res.status(400).json({ message: "Batch ID is required" });
   }
 
   // Generate token
-  const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ batch_id }, process.env.JWT_SECRET, {
     expiresIn: "1min",
   });
 

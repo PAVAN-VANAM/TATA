@@ -54,9 +54,13 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (user.department == "faculty") {
+      return res.json({ batch_id: user.batch_id });
+    }
+
     const batch = await getTokenByBatchId(user.batch_id);
 
-    res.json({ user: user, batch: batch.batch_name });
+    res.json({ user: user, batch_name: batch.batch_name });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
