@@ -71,13 +71,11 @@ const updateAttendance = async (attendance_id, attendance) => {
  * Optionally, delete an attendance record.
  * param {number} attendance_id - The ID of the attendance record.
  */
-const deleteAttendance = async (attendance_id) => {
+const deleteAttendance = async () => {
   const query = `
-    DELETE FROM attendance
-    WHERE user_id = $1;
+    TRUNCATE TABLE attendance;
   `;
-  const values = [attendance_id];
-  await pool.query(query, values);
+  await pool.query(query);
 };
 
 module.exports = {

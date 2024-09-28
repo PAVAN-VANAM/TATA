@@ -6,6 +6,7 @@ const { getUserById } = require("../models/profile");
 const {
   markAttendance,
   getAttendanceByUserId,
+  deleteAttendance,
 } = require("../models/attendance");
 require("dotenv").config();
 
@@ -29,7 +30,9 @@ router.post("/mark", async (req, res) => {
       const exist = await getAttendanceByUserId(user_id);
       console.log(exist);
       if (exist) {
-        res.status(200).json({ message: "Attendance Marked successfully" });
+        res
+          .status(200)
+          .json({ message: "existed Attendance Marked successfully" });
         return;
       }
     } catch (error) {
@@ -45,6 +48,7 @@ router.post("/mark", async (req, res) => {
         attendance,
         batch_name
       );
+      console.log(attendanceRecord);
       res.status(201).json({ message: "Attendance Marked successfully" });
     } else {
       res.status(404).json({ msg: "Invalid" });
@@ -65,6 +69,18 @@ router.get("/view", async (req, res) => {
     // Retrieve attendance records
     const attendanceRecords = await getAttendanceByUserId(user_id);
     res.json({ attendance: attendanceRecords });
+  } catch (error) {
+    console.error("Error retrieving attendance:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/delete", async (req, res) => {
+  try {
+    // Retrieve attendance records
+    const attendanceRecords = await deleteAttendance();
+    console.log(attendanceRecords);
+    res.json({ msg: "All Clear" });
   } catch (error) {
     console.error("Error retrieving attendance:", error);
     res.status(500).json({ message: "Internal server error" });

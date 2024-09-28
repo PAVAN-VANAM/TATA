@@ -1,14 +1,15 @@
 // models/jwtToken.js
 
-const pool = require("./db");
-
+const Prisma = require('./db');
 /*
  * Create a new JWT token for a batch.
  * @param {number} batch_id - The ID of the batch.
  * @param {string} token - The JWT token.
  * @returns {Promise<Object>} - The inserted token record.
  */
-const createToken = async (batch_id, batch_name, token) => {
+const createBatch = async (batch_id, batch_name, token) => {
+  const findBatch = await Prisma.Batch
+
   const query = `
     INSERT INTO batch (batch_id,batch_name, token)
     VALUES ($1, $2, $3)

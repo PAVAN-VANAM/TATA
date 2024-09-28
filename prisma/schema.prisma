@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+
+
+
+
+
+
+// schema.prisma
+
+model Profile {
+  user_id    String   @id @db.VarChar(100)
+  name       String   @db.VarChar(255)
+  password   String   @db.VarChar(255)
+  department String   @db.VarChar(255)
+  batch_id   a   @db.VarChar(255)
+  
+  // Relation to Batch
+  batch      Batch    @relation(fields: [batch_id], references: [batch_id])
+  attendance Attendance[]
+}
+
+model Batch {
+  batch_id   String   @id @db.VarChar(255)
+  batch_name String   @unique @db.VarChar(255)
+  faculty    String   @db.VarChar(255)
+  token      String   @db.VarChar(255)
+  
+  // Relation to Profile
+  profiles   Profile[]
+  
+  // Relation to Attendance
+  attendances Attendance[]
+}
+
+model Attendance {
+  attendance_id String   @id @db.VarChar(100)
+  attendance    Boolean  @default(false)
+  batch_id    String   @db.VarChar(255)
+  
+  // Relations
+  batch         Batch     @relation(fields: [batch_id], references: [batch_id])
+  profile       Profile   @relation(fields: [attendance_id], references: [user_id])
+}
