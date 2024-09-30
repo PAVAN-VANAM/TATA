@@ -1,24 +1,16 @@
-const { PrismaClient } = require("@prisma/client");
+require("dotenv").config(); // Load .env file
+const { Pool } = require("pg");
 
-const prisma = new PrismaClient({
-  log: ["query"],
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
 });
-// just to check Case of PRisma client 
 
-/* async function main() {
-  // ... you will write your Prisma Client queries here
-  const allUsers = await prisma.profile.findMany();
-  console.log(allUsers);
-}
+pool.connect((err) => {
+  if (err) {
+    console.error("Error connecting to PostgreSQL:", err);
+  } else {
+    console.log("Connected to PostgreSQL successfully!");
+  }
+});
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  }); */
-
-export default prisma;
+module.exports = pool;
