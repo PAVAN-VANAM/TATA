@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "prisma generate && node index.js",
+    "build": "prisma generate && nodemon index",
     "start": "nodemon index.js"
   },
   "keywords": [],
