@@ -8,52 +8,39 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
-
-
-
-
-
-
-// schema.prisma
-
-model Profile {
-  user_id    String   @id @db.VarChar(100)
-  name       String   @db.VarChar(255)
-  password   String   @db.VarChar(255)
-  department String   @db.VarChar(255)
-  batch_id   a   @db.VarChar(255)
-  
-  // Relation to Batch
-  batch      Batch    @relation(fields: [batch_id], references: [batch_id])
-  attendance Attendance[]
+// Profile model
+model profile {
+  profileId  String       @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectID
+  userId     String       @unique
+  name       String
+  password   String
+  department String
+  batchIds   String[]     @db.ObjectId // Array of ObjectIDs to store references to Batch documents
+  attendance attendance[] // Relationship with Attendance
 }
 
-model Batch {
-  batch_id   String   @id @db.VarChar(255)
-  batch_name String   @unique @db.VarChar(255)
-  faculty    String   @db.VarChar(255)
-  token      String   @db.VarChar(255)
-  
-  // Relation to Profile
-  profiles   Profile[]
-  
-  // Relation to Attendance
-  attendances Attendance[]
+// Batch model
+model batch {
+  batchId    String       @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectID
+  batch_name String       @unique
+  faculty    String
+  token      String
+  attendance attendance[] // Relationship with Attendance
 }
 
-model Attendance {
-  attendance_id String   @id @db.VarChar(100)
-  attendance    Boolean  @default(false)
-  batch_id    String   @db.VarChar(255)
-  
-  // Relations
-  batch         Batch     @relation(fields: [batch_id], references: [batch_id])
-  profile       Profile   @relation(fields: [attendance_id], references: [user_id])
+// Attendance model
+model attendance {
+  attendanceId String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectID
+  userId       String   @db.ObjectId // Reference to Profile
+  batchId      String   @db.ObjectId // Reference to Batch
+  attendance   Boolean  @default(false)
+  date         DateTime @default(now())
+
+  profile profile @relation(fields: [userId], references: [profileId]) // Relation with Profile
+  batch   batch   @relation(fields: [batchId], references: [batchId]) // New relation with Batch
 }

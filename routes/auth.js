@@ -3,6 +3,7 @@
 const express = require("express");
 const { createUser, getUserById } = require("../models/profile");
 const { getTokenByBatchId } = require("../models/batch");
+const prisma = require("../models/db");
 require("dotenv").config();
 
 const router = express.Router();
@@ -43,7 +44,9 @@ router.post("/login", async (req, res) => {
     const { user_id, password } = req.body;
 
     // Retrieve user
-    const user = await getUserById(user_id);
+    const user = await prisma.profile.findUnique({
+      where: { userId: user_id },
+    });
     console.log(user);
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -53,14 +56,15 @@ router.post("/login", async (req, res) => {
     if (password != user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
-    if (user.department == "faculty") {
-      return res.json({ batch_id: user.batch_id });
-    }
-
-    const batch = await getTokenByBatchId(user.batch_id);
-
-    res.json({ user: user, batch_name: batch.batch_name });
+    const batch = user.batchIds;
+    const batch_id = batch[0];
+    const batches = await prisma.batch.findMany({
+      where: {
+        batchId: batch_id, // Find all batches with the provided batchIds
+      },
+    });
+    //console.log(batches);
+    res.json({ user: user, batch_name: batches[0].batch_name });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
