@@ -5,18 +5,11 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
+const auth = require("./routes/profile");
+app.use("/profile", auth);
 
-const create = require('./routes/create');
-app.use("/reg", create);
-
-
-
-
-const auth = require("./routes/auth");
-app.use("/auth", auth);
-
-const generate = require("./routes/generate");
-app.use("/generate", generate);
+const generate = require("./routes/batch");
+app.use("/batch", generate);
 
 const attendance = require("./routes/attendenceController");
 

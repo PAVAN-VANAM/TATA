@@ -1,9 +1,8 @@
 // routes/auth.js
 
 const express = require("express");
-const { createUser, getUserById } = require("../models/profile");
-const { getTokenByBatchId } = require("../models/batch");
-const prisma = require("../models/db");
+
+const prisma = require("../db");
 require("dotenv").config();
 
 const router = express.Router();
@@ -11,23 +10,31 @@ const router = express.Router();
 /**
  * Register a new user.
  */
-router.post("/register", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const { user_id, name, password, department, batch_id } = req.body;
+    const { userId, name, password, department, batchNames } = req.body;
 
     // Check if user already exists
-    const existingUser = await getUserById(user_id);
+    const existingUser = await prisma.profile.findUnique({
+      where: { userId: userId },
+    });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    
+
     // Create user
-    const user = await createUser(
-      user_id,
-      name,
-      password,
-      department,
-      batch_id
+    const user = await prisma.profile.create({
+      data:{
+        
+        userId,
+        name,
+        password,
+        department,
+        batchNames
+      }
+    }
     );
     res.status(201).json({ user });
   } catch (error) {

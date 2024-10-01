@@ -20,7 +20,7 @@ model profile {
   name       String
   password   String
   department String
-  batchIds   String[]     @db.ObjectId // Array of ObjectIDs to store references to Batch documents
+  batchNames String[] // Array of batch_names to store references to Batch documents
   attendance attendance[] // Relationship with Attendance
 }
 
@@ -35,12 +35,12 @@ model batch {
 
 // Attendance model
 model attendance {
-  attendanceId String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectID
-  userId       String   @db.ObjectId // Reference to Profile
-  batchId      String   @db.ObjectId // Reference to Batch
-  attendance   Boolean  @default(false)
-  date         DateTime @default(now())
+  attendanceId String  @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectID
+  userId       String // Reference to Profile
+  batch_name   String // Reference to Batch
+  attendance   Boolean @default(false)
+  date         String
 
-  profile profile @relation(fields: [userId], references: [profileId]) // Relation with Profile
-  batch   batch   @relation(fields: [batchId], references: [batchId]) // New relation with Batch
+  profile profile @relation(fields: [userId], references: [userId]) // Relation with Profile
+  batch   batch   @relation(fields: [batch_name], references: [batch_name]) // New relation with Batch
 }
