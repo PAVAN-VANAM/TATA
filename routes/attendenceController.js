@@ -90,6 +90,24 @@ router.get("/view", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+// get all attendance data
+
+router.get("/viewAll", async (req, res) => {
+  try {
+    // Retrieve attendance records
+    const allAttendanceRecords = await prisma.attendance.findMany({
+      orderBy: {
+        userId: "desc",
+      },
+    });
+    console.log(allAttendanceRecords);
+
+    res.json({ allAttendanceRecords });
+  } catch (error) {
+    console.error("Error retrieving attendance:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router.get("/mernb3", async (req, res) => {
   try {
