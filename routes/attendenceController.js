@@ -91,10 +91,13 @@ router.get("/view", async (req, res) => {
   }
 });
 
-router.get("/viewAll", async (req, res) => {
+router.get("/mernb3", async (req, res) => {
   try {
     // Retrieve attendance records
     const allAttendanceRecords = await prisma.attendance.findMany({
+      where: {
+        batch_name: "vihaan-3yr-MERN-B-3",
+      },
       orderBy: {
         userId: "desc",
       },
