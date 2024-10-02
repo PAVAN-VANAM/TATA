@@ -49,6 +49,7 @@ router.post("/login", async (req, res) => {
     // Retrieve user
     const user = await prisma.profile.findUnique({
       where: { userId: userId },
+      include: { attendance: true },
     });
     console.log(user);
     if (!user) {
@@ -64,6 +65,26 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/view", async (req, res) => {
+  const { batch_name } = req.body;
+  try {
+    // Find all profiles where batchNames array contains "vihaan-3yr-MERN-B-3"
+    const profiles = await prisma.profile.findMany({
+      where: {
+        batchNames: {
+          has: batch_name, // Matches profiles where batchNames array contains this value
+        },
+      },
+      include: { attendance: true },
+    });
+
+    res.json(profiles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving profiles.");
   }
 });
 
