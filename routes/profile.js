@@ -22,20 +22,16 @@ router.post("/create", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    
-
     // Create user
     const user = await prisma.profile.create({
-      data:{
-        
+      data: {
         userId,
         name,
         password,
         department,
-        batchNames
-      }
-    }
-    );
+        batchNames,
+      },
+    });
     res.status(201).json({ user });
   } catch (error) {
     console.error("Error registering user:", error);
@@ -48,11 +44,11 @@ router.post("/create", async (req, res) => {
  */
 router.post("/login", async (req, res) => {
   try {
-    const { user_id, password } = req.body;
+    const { userId, password } = req.body;
 
     // Retrieve user
     const user = await prisma.profile.findUnique({
-      where: { userId: user_id },
+      where: { userId: userId },
     });
     console.log(user);
     if (!user) {
@@ -63,11 +59,11 @@ router.post("/login", async (req, res) => {
     if (password != user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const batch = user.batchIds;
-    const batch_id = batch[0];
+    const batch = user.batchNames;
+    const batchNames = batch[0];
     const batches = await prisma.batch.findMany({
       where: {
-        batchId: batch_id, // Find all batches with the provided batchIds
+        batch_name: batchNames, // Find all batches with the provided batchIds
       },
     });
     //console.log(batches);
