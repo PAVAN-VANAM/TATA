@@ -59,15 +59,8 @@ router.post("/login", async (req, res) => {
     if (password != user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const batch = user.batchNames;
-    const batchNames = batch[0];
-    const batches = await prisma.batch.findMany({
-      where: {
-        batch_name: batchNames, // Find all batches with the provided batchIds
-      },
-    });
-    //console.log(batches);
-    res.json({ user: user, batch_name: batches[0].batch_name });
+
+    res.json({ user: user });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
