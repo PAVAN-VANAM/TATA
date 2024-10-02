@@ -78,10 +78,20 @@ router.get("/view", async (req, res) => {
           has: batch_name, // Matches profiles where batchNames array contains this value
         },
       },
-      include: { attendance: true },
+      include: {
+        attendance: true, // Include all attendance records
+      },
     });
 
-    res.json(profiles);
+    // Filter the attendance by batch_name in the application
+    const filteredProfiles = profiles.map((profile) => {
+      profile.attendance = profile.attendance.filter(
+        (att) => att.batch_name === batch_name
+      );
+      return profile;
+    });
+
+    res.json(filteredProfiles);
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while retrieving profiles.");
