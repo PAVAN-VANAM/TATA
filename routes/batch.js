@@ -44,7 +44,7 @@ router.get("/batches", async (req, res) => {
 });
 
 // Generate JWT Token
-router.post("/generate", async (req, res) => {
+router.put("/generate", async (req, res) => {
   const { batch_name } = req.body;
 
   // Validate user_id (you can add your own validation logic here)
