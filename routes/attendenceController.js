@@ -72,7 +72,7 @@ router.post("/mark", decodeToken, async (req, res) => {
       },
     });
 
-    if (profiles.length > 0) {
+    if (profiles != null && profiles.length > 0) {
       // Mark attendance
       const newAttendance = await prisma.attendance.create({
         data: {
