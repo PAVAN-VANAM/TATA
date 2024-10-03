@@ -135,6 +135,7 @@ router.get("/viewAll", async (req, res) => {
 
 router.post("/update", async (req, res) => {
   try {
+    const { userId, batch_name, attendance } = req.body;
     // Retrieve attendance records
     const newAttendance = await prisma.attendance.create({
       data: {
