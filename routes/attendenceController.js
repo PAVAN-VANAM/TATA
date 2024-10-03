@@ -78,7 +78,9 @@ router.post("/mark", decodeToken, async (req, res) => {
         },
       });
       console.log(newAttendance);
-      res.status(201).json({ message: "Attendance Marked successfully" });
+      res.status(201).json({ message: "Attendance Marked successfully",
+          user : newAttendance
+       });
   } catch (error) {
     console.error("Error marking attendance:", error);
     res.status(500).json({ message: "Internal server error" });
