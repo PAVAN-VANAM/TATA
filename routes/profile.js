@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/view", async (req, res) => {
+router.post("/view", async (req, res) => {
   const { batch_name } = req.body;
   try {
     // Find all profiles where batchNames array contains "vihaan-3yr-MERN-B-3"
