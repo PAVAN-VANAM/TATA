@@ -49,7 +49,6 @@ router.post("/login", async (req, res) => {
     // Retrieve user
     const user = await prisma.profile.findUnique({
       where: { userId: userId },
-      include: { attendance: true },
     });
     console.log(user);
     if (!user) {
