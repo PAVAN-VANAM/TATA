@@ -148,7 +148,6 @@ router.post("/update", async (req, res) => {
     console.log(newAttendance);
     res.status(201).json({
       message: "Attendance Marked successfully",
-      user: newAttendance,
     });
   } catch (error) {
     console.error("Error retrieving attendance:", error);
