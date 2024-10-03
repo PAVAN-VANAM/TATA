@@ -133,20 +133,22 @@ router.get("/viewAll", async (req, res) => {
   }
 });
 
-router.get("/mernb3", async (req, res) => {
+router.post("/update", async (req, res) => {
   try {
     // Retrieve attendance records
-    const allAttendanceRecords = await prisma.attendance.findMany({
-      where: {
-        batch_name: "vihaan-3yr-MERN-B-3",
-      },
-      orderBy: {
-        userId: "desc",
+    const newAttendance = await prisma.attendance.create({
+      data: {
+        userId: userId,
+        batch_name: batch_name,
+        attendance: attendance,
+        date: formattedDate,
       },
     });
-    console.log(allAttendanceRecords);
-
-    res.json({ allAttendanceRecords });
+    console.log(newAttendance);
+    res.status(201).json({
+      message: "Attendance Marked successfully",
+      user: newAttendance,
+    });
   } catch (error) {
     console.error("Error retrieving attendance:", error);
     res.status(500).json({ message: "Internal server error" });
