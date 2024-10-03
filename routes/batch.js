@@ -54,7 +54,7 @@ router.put("/generate", async (req, res) => {
 
   // Generate token
   const token = jwt.sign({ batch_name }, process.env.JWT_SECRET, {
-    expiresIn: "1min",
+    expiresIn: "5min",
   });
 
   const updatedBatch = await prisma.batch.update({

@@ -1,5 +1,5 @@
 // routes/attendance.js
-
+const jwt = require("jsonwebtoken");
 const express = require("express");
 require("dotenv").config();
 const prisma = require("../db");
@@ -18,23 +18,41 @@ const day = String(today.getDate()).padStart(2, "0");
 const formattedDate = `${day}-${month}-${year}`;
 console.log(formattedDate);
 
-router.post("/mark", async (req, res) => {
+// Decode function
+
+function decodeToken(req, res, next) {
+  const token = req.headers["authorization"];
+
+  if (!token) {
+    return res.status(403).send({ message: "No token provided." });
+  }
+
+  // Remove 'Bearer ' from the token string (if using Bearer format)
+  const extractedToken = token.split(" ")[1];
+  console.log(extractedToken);
+  // Verify and decode the token
+  jwt.verify(extractedToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({ message: "Failed to authenticate token." });
+    }
+    // Save decoded information to request object
+    req.user = decoded;
+    next();
+  });
+}
+
+router.post("/mark", decodeToken, async (req, res) => {
   try {
-    const { userId, batch_name, token, attendance } = req.body;
+    const { userId, attendance } = req.body;
     // Optionally, verify if the user exists
-    const Orginaltoken = await prisma.batch.findUnique({
-      where: { batch_name: batch_name },
-    });
-    /* const user = await getUserById(user_id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    } */
-    console.log(Orginaltoken.token);
-    console.log(token);
+    const batch_name = req.user.batch_name;
+   
     try {
       const attendanceRecords = await prisma.attendance.findMany({
         where: {
           userId: userId,
+          batch_name: batch_name,
           date: formattedDate,
         },
       });
@@ -51,7 +69,6 @@ router.post("/mark", async (req, res) => {
     }
 
     // Mark attendance
-    if (token == Orginaltoken.token) {
       const newAttendance = await prisma.attendance.create({
         data: {
           userId: userId,
@@ -62,9 +79,6 @@ router.post("/mark", async (req, res) => {
       });
       console.log(newAttendance);
       res.status(201).json({ message: "Attendance Marked successfully" });
-    } else {
-      res.status(404).json({ msg: "Invalid" });
-    }
   } catch (error) {
     console.error("Error marking attendance:", error);
     res.status(500).json({ message: "Internal server error" });
