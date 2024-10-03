@@ -48,24 +48,19 @@ router.post("/mark", decodeToken, async (req, res) => {
     // Optionally, verify if the user exists
     const batch_name = req.user.batch_name;
 
-    try {
-      const attendanceRecords = await prisma.attendance.findMany({
-        where: {
-          userId: userId,
-          batch_name: batch_name,
-          date: formattedDate,
-        },
-      });
-      console.log(attendanceRecords);
-      if (attendanceRecords.length > 0) {
-        res
-          .status(200)
-          .json({ message: "existed Attendance Marked successfully" });
-        return;
-      }
-    } catch (error) {
-      console.error("Error marking attendance:", error);
-      res.status(500).json({ message: "Internal server error" });
+    const attendanceRecords = await prisma.attendance.findMany({
+      where: {
+        userId: userId,
+        batch_name: batch_name,
+        date: formattedDate,
+      },
+    });
+    console.log(attendanceRecords);
+    if (attendanceRecords.length > 0) {
+      res
+        .status(200)
+        .json({ message: "existed Attendance Marked successfully" });
+      return;
     }
 
     const profiles = await prisma.profile.findUnique({
@@ -88,12 +83,10 @@ router.post("/mark", decodeToken, async (req, res) => {
         },
       });
       console.log(newAttendance);
-      res
-        .status(201)
-        .json({
-          message: "Attendance Marked successfully",
-          user: newAttendance,
-        });
+      res.status(201).json({
+        message: "Attendance Marked successfully",
+        user: newAttendance,
+      });
     } else {
       return res.status(201).json({ message: "Your are not in this Batch!!" });
     }
