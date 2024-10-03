@@ -47,7 +47,7 @@ router.post("/mark", decodeToken, async (req, res) => {
     const { userId, attendance } = req.body;
     // Optionally, verify if the user exists
     const batch_name = req.user.batch_name;
-   
+
     try {
       const attendanceRecords = await prisma.attendance.findMany({
         where: {
@@ -68,7 +68,17 @@ router.post("/mark", decodeToken, async (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
 
-    // Mark attendance
+    const profiles = await prisma.profile.findUnique({
+      where: {
+        userId: userId,
+        batchNames: {
+          has: batch_name, // Matches profiles where batchNames array contains this value
+        },
+      },
+    });
+
+    if (profiles.length > 0) {
+      // Mark attendance
       const newAttendance = await prisma.attendance.create({
         data: {
           userId: userId,
@@ -78,9 +88,15 @@ router.post("/mark", decodeToken, async (req, res) => {
         },
       });
       console.log(newAttendance);
-      res.status(201).json({ message: "Attendance Marked successfully",
-          user : newAttendance
-       });
+      res
+        .status(201)
+        .json({
+          message: "Attendance Marked successfully",
+          user: newAttendance,
+        });
+    } else {
+      return res.status(201).json({ message: "Your are not in this Batch!!" });
+    }
   } catch (error) {
     console.error("Error marking attendance:", error);
     res.status(500).json({ message: "Internal server error" });
